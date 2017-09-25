@@ -14,8 +14,8 @@ libraryDependencies ++= Seq(
 resolvers += Resolver.mavenLocal
 
 // GROBID
-libraryDependencies += "org.grobid" % "grobid-core" % "0.4.3-SNAPSHOT"
-libraryDependencies += "org.grobid" % "grobid-ner" % "0.4.3-SNAPSHOT"
+libraryDependencies += "org.grobid" % "grobid-core" % "0.5.0-SNAPSHOT"
+libraryDependencies += "org.grobid" % "grobid-ner" % "0.5.0-SNAPSHOT"
 
 excludeDependencies += "org.slf4j" %% "slf4j-log4j12"
 excludeDependencies += "log4j" %% "log4j"

@@ -95,7 +95,5 @@ object DemoDate {
       println()
     })
     print("</dates>")
-
-
   }
 }
