@@ -48,6 +48,11 @@ object DemoPeriod {
   def main(args: Array[String]): Unit = {
     val grobidHome = "/Users/lfoppiano/development/inria/grobid/grobid-home"
 
+    if(args.length != 1) {
+      println("Please provide the file to be processed as first argument. ")
+      sys.exit(-1)
+    }
+
     val grobidHomeFinder = new GrobidHomeFinder(util.Arrays.asList(grobidHome))
 
     grobidHomeFinder.findGrobidHomeOrFail();
@@ -68,6 +73,12 @@ object DemoPeriod {
 
 object DemoDate {
   def main(args: Array[String]): Unit = {
+
+    if(args.length != 1) {
+      println("Please provide the file to be processed as first argument. ")
+      sys.exit(-1)
+    }
+
     val grobidHome = "/Users/lfoppiano/development/inria/grobid/grobid-home"
 
     val grobidHomeFinder = new GrobidHomeFinder(util.Arrays.asList(grobidHome))
