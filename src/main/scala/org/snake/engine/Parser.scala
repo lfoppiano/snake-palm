@@ -3,6 +3,7 @@ package org.snake.engine
 import java.io.InputStream
 import java.util
 
+import org.grobid.core.data.dates.Period
 import org.grobid.core.engines.{DateParser, MultiDateParser, NERParser, NERParsers}
 import org.grobid.core.lexicon.NERLexicon.NER_Type
 import org.grobid.core.main.{GrobidHomeFinder, LibraryLoader}
@@ -17,30 +18,33 @@ class Parser(parser: NERParser, intervalParser: MultiDateParser, dParser: DatePa
   var dateParser: DateParser = dParser
   var multiDateParser: MultiDateParser = intervalParser
 
-  def parse(is: InputStream): Unit = {
+  def parse(is: InputStream): List[Period] = {
 
     val text: String = scala.io.Source.fromInputStream(is).mkString
     parse(text)
   }
 
-  def parse(text: String): Unit = {
+  def parse(text: String): List[Period] = {
     val entities = nerParser.extractNE(text)
 
     val entitiesScala = JavaConverters.asScalaBufferConverter(entities).asScala.toList
 
-    println("All")
+    println("All Named Entities")
     entitiesScala.foreach(x => println(x))
 
-    val periods = {
+    val nerPeriods = {
       entitiesScala.filter(e => e.getType == NER_Type.PERIOD)
     }
 
-    println("Periods")
-    periods.map(x => {
-      println(x.getRawName)
-      multiDateParser.process(x.getRawName)
-      dateParser.processing(x.getRawName)
+    println("Only periods and dates")
+    return nerPeriods.map(x => {
+      //      println(x.getRawName)
+      val periods = multiDateParser.process(x.getRawName)
+      val periodsScala = JavaConverters.asScalaBufferConverter(periods).asScala.toList
+      return periodsScala;
+      //      dateParser.processing(x.getRawName)
     })
+
   }
 }
 
@@ -48,7 +52,7 @@ object DemoPeriod {
   def main(args: Array[String]): Unit = {
     val grobidHome = "/Users/lfoppiano/development/inria/grobid/grobid-home"
 
-    if(args.length != 1) {
+    if (args.length != 1) {
       println("Please provide the file to be processed as first argument. ")
       sys.exit(-1)
     }
@@ -74,7 +78,7 @@ object DemoPeriod {
 object DemoDate {
   def main(args: Array[String]): Unit = {
 
-    if(args.length != 1) {
+    if (args.length != 1) {
       println("Please provide the file to be processed as first argument. ")
       sys.exit(-1)
     }
@@ -82,14 +86,14 @@ object DemoDate {
     val grobidHome = "/Users/lfoppiano/development/inria/grobid/grobid-home"
 
     val grobidHomeFinder = new GrobidHomeFinder(util.Arrays.asList(grobidHome))
-    
+
     grobidHomeFinder.findGrobidHomeOrFail();
     GrobidProperties.getInstance(grobidHomeFinder)
     LibraryLoader.load()
 
     val dateParser = new DateParser()
     val multiDateParser = new MultiDateParser()
-    
+
     val src = Source.fromFile(args(0))
     val iter = src.getLines()
 
