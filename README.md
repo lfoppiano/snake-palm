@@ -1,5 +1,8 @@
 # Snake-PALM #
 
+[![Build Status](https://travis-ci.org/lfoppiano/snake-palm.svg?branch=master)](https://travis-ci.org/lfoppiano/snake-palm)
+[![Coverage Status](https://coveralls.io/repos/lfoppiano/snake-palm/badge.svg)](https://coveralls.io/r/lfoppiano/snake-palm)
+
 Work in progress... 
 
 ### Dependencies ###
