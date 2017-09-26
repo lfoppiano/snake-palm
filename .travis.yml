@@ -1,3 +1,9 @@
 language: scala
 dist: trusty
 sudo: false
+
+script:
+  - sbt clean coverage test
+  
+after_success:
+  - sbt coverageReport coveralls

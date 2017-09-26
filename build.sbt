@@ -22,3 +22,7 @@ resolvers += Resolver.mavenLocal
 excludeDependencies += "org.slf4j" %% "slf4j-log4j12"
 excludeDependencies += "log4j" %% "log4j"
 //excludeDependencies += "com.rockymadden.stringmetric" %% "stringmetric-core" % "0.27.3"
+
+
+addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.3.5")
+addSbtPlugin("org.scoverage" % "sbt-coveralls" % "1.1.0")
