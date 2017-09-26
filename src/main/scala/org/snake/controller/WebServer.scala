@@ -3,19 +3,17 @@ package org.snake.controller
 import java.util
 
 import akka.actor.ActorSystem
-import akka.http.javadsl.server.Route
-import akka.http.scaladsl.Http
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.{Http, server}
 import akka.stream.ActorMaterializer
-import org.grobid.core.data.dates.Period
 import org.grobid.core.engines.{DateParser, MultiDateParser, NERParsers}
 import org.grobid.core.main.{GrobidHomeFinder, LibraryLoader}
 import org.grobid.core.utilities.GrobidProperties
 import org.snake.engine.Parser
 
 import scala.concurrent.Future
-import scala.io.{Source, StdIn}
+import scala.io.StdIn
 
 object WebServer {
   def main(args: Array[String]) {
@@ -29,38 +27,29 @@ object WebServer {
 
     //-- GROBID INITIALISATION --
     val grobidHome = "/Users/lfoppiano/development/inria/grobid/grobid-home"
-
-    if (args.length != 1) {
-      println("Please provide the file to be processed as first argument. ")
-      sys.exit(-1)
-    }
-
     val grobidHomeFinder = new GrobidHomeFinder(util.Arrays.asList(grobidHome))
 
     grobidHomeFinder.findGrobidHomeOrFail();
     GrobidProperties.getInstance(grobidHomeFinder)
     LibraryLoader.load()
-
+    // End GROBID INITIALISATION
     val nerParsers = new NERParsers()
     val dateParser = new DateParser()
     val multiDateParser = new MultiDateParser()
 
     val parser = new Parser(nerParsers.getParser("en"), multiDateParser, dateParser)
 
-    val route: Route =
+    val route: server.Route =
       get {
-        pathPrefix("item") {
-          complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Say welcome to the jungle.</h1>"))
-        }
+        complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Say welcome to the jungle.</h1>"))
       } ~
         post {
           path("process") {
             entity(as[String]) { text =>
-              def getResults(res:List[Period]): Future[List[Period]] = ???
-              val result: List[Period] = parser.parse(text)
+              val result = Future.apply(parser.parse(text))
 
-              onComplete(getResults(result)) { done =>
-                complete("order created")
+              onComplete(result) { done =>
+                complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Data processed!</h1>"))
               }
             }
           }
