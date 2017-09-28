@@ -3,6 +3,7 @@ package org.snake.engine
 import java.io.InputStream
 import java.util
 
+import org.grobid.core.data.Date
 import org.grobid.core.data.dates.Period
 import org.grobid.core.engines.{DateParser, MultiDateParser, NERParser, NERParsers}
 import org.grobid.core.lexicon.NERLexicon.NER_Type
@@ -37,12 +38,28 @@ class Parser(parser: NERParser, intervalParser: MultiDateParser, dParser: DatePa
     }
 
     println("Only periods and dates")
-    return nerPeriods.map(x => {
+    return nerPeriods.flatMap(x => {
       //      println(x.getRawName)
       val periods = multiDateParser.process(x.getRawName)
       val periodsScala = JavaConverters.asScalaBufferConverter(periods).asScala.toList
-      return periodsScala;
-      //      dateParser.processing(x.getRawName)
+
+      periodsScala.foreach(p => {
+        if (p.getType == Period.Type.VALUE) {
+          val date = dateParser.processing(p.getValue.getRawDate)
+          p.getValue.setIsoDate(date.get(0))
+        } else if(p.getType == Period.Type.INTERVAL) {
+          val fromDate = dateParser.processing(p.getFromDate.getRawDate).get(0)
+          p.getFromDate.setIsoDate(fromDate)
+          val toDate = dateParser.processing(p.getToDate.getRawDate).get(0)
+          p.getFromDate.setIsoDate(toDate)
+        } else if(p.getType == Period.Type.LIST) {
+          JavaConverters.asScalaBufferConverter(p.getList).asScala.toList.map(dw => {
+            dw.setIsoDate(dateParser.processing(dw.getRawDate).get(0))
+          })
+        }
+      })
+//      println(periodsScala)
+      periodsScala
     })
 
   }

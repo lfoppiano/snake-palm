@@ -7,6 +7,7 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.{Http, server}
 import akka.stream.ActorMaterializer
+import akka.util.ByteString
 import org.grobid.core.engines.{DateParser, MultiDateParser, NERParsers}
 import org.grobid.core.main.{GrobidHomeFinder, LibraryLoader}
 import org.grobid.core.utilities.GrobidProperties
@@ -33,6 +34,7 @@ object WebServer {
     GrobidProperties.getInstance(grobidHomeFinder)
     LibraryLoader.load()
     // End GROBID INITIALISATION
+
     val nerParsers = new NERParsers()
     val dateParser = new DateParser()
     val multiDateParser = new MultiDateParser()
@@ -46,14 +48,31 @@ object WebServer {
         post {
           path("process") {
             entity(as[String]) { text =>
-              val result = Future.apply(parser.parse(text))
+              val result = parser.parse(text)
+              val jsons = result.map(f => f.toJson())
 
-              onComplete(result) { done =>
-                complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Data processed!</h1>"))
-              }
+
+              val start = """"{"names":["""
+              val end = """]}"""
+              val json = jsons.mkString(start, ",", end)
+
+              complete(HttpEntity(ContentTypes.`application/json`, ByteString(json)));
             }
           }
         }
+
+    /*post {
+      path("process") {
+        entity(as[String]) { text =>
+          val result = Future.apply(parser.parse(text))
+
+          onComplete(result) { done =>
+            complete(HttpEntity(ContentTypes.`application/json`, done.get))
+          }
+        }
+      }
+    }*/
+
 
     val bindingFuture = Http().bindAndHandle(route, "localhost", 8080)
 
