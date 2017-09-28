@@ -13,7 +13,6 @@ import org.grobid.core.main.{GrobidHomeFinder, LibraryLoader}
 import org.grobid.core.utilities.GrobidProperties
 import org.snake.engine.Parser
 
-import scala.concurrent.Future
 import scala.io.StdIn
 
 object WebServer {
