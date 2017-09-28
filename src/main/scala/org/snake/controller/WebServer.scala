@@ -29,7 +29,7 @@ object WebServer {
     val grobidHome = "/Users/lfoppiano/development/inria/grobid/grobid-home"
     val grobidHomeFinder = new GrobidHomeFinder(util.Arrays.asList(grobidHome))
 
-    grobidHomeFinder.findGrobidHomeOrFail();
+    grobidHomeFinder.findGrobidHomeOrFail()
     GrobidProperties.getInstance(grobidHomeFinder)
     LibraryLoader.load()
     // End GROBID INITIALISATION
@@ -51,7 +51,7 @@ object WebServer {
               val jsons = result.map(f => f.toJson())
 
 
-              val start = """"{"names":["""
+              val start = """"{"dates":["""
               val end = """]}"""
               val json = jsons.mkString(start, ",", end)
 
