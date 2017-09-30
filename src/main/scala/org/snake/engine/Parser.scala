@@ -3,12 +3,13 @@ package org.snake.engine
 import java.io.InputStream
 import java.util
 
+import com.sun.scenario.effect.Offset
 import org.grobid.core.data.Date
 import org.grobid.core.data.dates.Period
 import org.grobid.core.engines.{DateParser, MultiDateParser, NERParser, NERParsers}
 import org.grobid.core.lexicon.NERLexicon.NER_Type
 import org.grobid.core.main.{GrobidHomeFinder, LibraryLoader}
-import org.grobid.core.utilities.GrobidProperties
+import org.grobid.core.utilities.{GrobidProperties, OffsetPosition}
 
 import scala.collection.JavaConverters
 import scala.io.Source
@@ -27,6 +28,7 @@ class Parser(parser: NERParser, intervalParser: MultiDateParser, dParser: DatePa
 
   def parse(text: String): List[Period] = {
     val entities = nerParser.extractNE(text)
+    println(text)
 
     val entitiesScala = JavaConverters.asScalaBufferConverter(entities).asScala.toList
 
@@ -38,27 +40,38 @@ class Parser(parser: NERParser, intervalParser: MultiDateParser, dParser: DatePa
     }
 
     println("Only periods and dates")
-    return nerPeriods.flatMap(x => {
-      //      println(x.getRawName)
-      val periods = multiDateParser.process(x.getRawName)
+    return nerPeriods.flatMap(nerEntityPeriod => {
+      println("NER -> name: " + nerEntityPeriod.getRawName + ", type:" + nerEntityPeriod.getType)
+      println("NER -> substring: " + text.substring(nerEntityPeriod.getOffsetStart, nerEntityPeriod.getOffsetEnd))
+
+      val nerStart = nerEntityPeriod.getOffsetStart
+      val nerEnd = nerEntityPeriod.getOffsetEnd
+
+      val periods = multiDateParser.process(nerEntityPeriod.getRawName)
       val periodsScala = JavaConverters.asScalaBufferConverter(periods).asScala.toList
 
       periodsScala.foreach(p => {
+
+        p.setOffsetStart(nerStart);
+        p.setOffsetEnd(nerEnd);
+
         if (p.getType == Period.Type.VALUE) {
           val date = dateParser.processing(p.getValue.getRawDate)
           p.getValue.setIsoDate(date.get(0))
-        } else if(p.getType == Period.Type.INTERVAL) {
+        } else if (p.getType == Period.Type.INTERVAL) {
           val fromDate = dateParser.processing(p.getFromDate.getRawDate).get(0)
           p.getFromDate.setIsoDate(fromDate)
+
           val toDate = dateParser.processing(p.getToDate.getRawDate).get(0)
-          p.getFromDate.setIsoDate(toDate)
-        } else if(p.getType == Period.Type.LIST) {
+          p.getToDate.setIsoDate(toDate)
+
+        } else if (p.getType == Period.Type.LIST) {
           JavaConverters.asScalaBufferConverter(p.getList).asScala.toList.map(dw => {
             dw.setIsoDate(dateParser.processing(dw.getRawDate).get(0))
           })
         }
       })
-//      println(periodsScala)
+      //      println(periodsScala)
       periodsScala
     })
 

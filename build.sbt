@@ -18,8 +18,9 @@ resolvers += Resolver.mavenLocal
 libraryDependencies ++= Seq(
   "org.grobid" % "grobid-core" % "0.5.0-SNAPSHOT",
   "org.grobid" % "grobid-ner" % "0.5.0-SNAPSHOT"
+//  "com.google.code.findbugs" % "jsr305" % "2.0.2"
 )
 
-excludeDependencies += "org.slf4j" %% "slf4j-log4j12"
-excludeDependencies += "log4j" %% "log4j"
+//excludeDependencies += "org.slf4j" %% "slf4j-log4j12"
+//excludeDependencies += "log4j" %% "log4j"
 //excludeDependencies += "com.rockymadden.stringmetric" %% "stringmetric-core" % "0.27.3"

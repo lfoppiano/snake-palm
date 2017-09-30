@@ -41,17 +41,27 @@ object WebServer {
     val parser = new Parser(nerParsers.getParser("en"), multiDateParser, dateParser)
 
     val route: server.Route =
-      get {
-        complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Say welcome to the jungle.</h1>"))
+
+      pathPrefix("demo") {
+        get {
+          encodeResponse {
+            getFromResourceDirectory("demo")
+          }
+        }
       } ~
-        post {
-          path("process") {
+        pathEnd {
+          get {
+            complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Say welcome to the jungle.</h1>"))
+          }
+        } ~
+        path("process") {
+          post {
             entity(as[String]) { text =>
               val result = parser.parse(text)
               val jsons = result.map(f => f.toJson())
 
 
-              val start = """"{"dates":["""
+              val start = """{"dates":["""
               val end = """]}"""
               val json = jsons.mkString(start, ",", end)
 
@@ -59,18 +69,6 @@ object WebServer {
             }
           }
         }
-
-    /*post {
-      path("process") {
-        entity(as[String]) { text =>
-          val result = Future.apply(parser.parse(text))
-
-          onComplete(result) { done =>
-            complete(HttpEntity(ContentTypes.`application/json`, done.get))
-          }
-        }
-      }
-    }*/
 
 
     val bindingFuture = Http().bindAndHandle(route, "localhost", 8080)
