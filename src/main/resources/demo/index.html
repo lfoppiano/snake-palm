@@ -1,21 +1,26 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="nerd-controller">
+<html lang="en" ng-app="date-application">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
     <meta http-equiv="Content-Language" content="en-uk"/>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
-          integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css"
-          integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+    <!-- Twitter bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"-->
+    <!--integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"-->
+    <!--crossorigin="anonymous"></script>-->
 
     <link rel="stylesheet" href="./custom-style.css">
 
-    <script src="js/modules/angular.js"></script>
-    
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.28/angular-sanitize.js"></script>
-    
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-sanitize.js"></script>
+
+    <script src="js/modules/ui-bootstrap-tpls-2.5.0.min.js"></script>
+
     <script src="js/controllers.js"></script>
 
     <style>
@@ -37,7 +42,7 @@
 <body>
 
 <div id="wrap" class="container">
-    <legend>Multilanguage Date Processing </legend>
+    <legend>Multilanguage Date Processing</legend>
     <div class="row">
         <div class="col-xs-12" ng-controller="nerdController">
 
@@ -45,12 +50,17 @@
                 <div class="col-sm-2">
                     <div class="row">
                         <div class="col-xs-12">
-                            <a ng-click="example(0)">Example 1</a>
+                            <a ng-click="fetchExample(0)">EHRI Example 1</a>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12">
-                            <a ng-click="example(1)">Example 2</a>
+                            <a ng-click="fetchExample(1)">EHRI Example 2</a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <a ng-click="fetchExample(2)">Wikipedia Example</a>
                         </div>
                     </div>
                 </div>
@@ -66,19 +76,13 @@
                     </form>
                 </div>
             </div>
-
             <div class="row">
-                <div class="col-sm-10 pre-scrollable" id="scrollable" ng-if="result">
-                    <p ng-bind-html="result"></p>
-
-                    <!--<div ng-if="results" class="col-xs-12" ng-repeat="result in results">
-                        <span><strong>{{result.name}}</strong></span> <span>({{result.coordinates.longitude}}, {{result.coordinates.latitude}})</span>
-                    </div>-->
-                </div>
+                <div class="col-sm-12"><br/><br/></div>
             </div>
-            <!--<div class="row">-->
-                <!--<div class="col-xs-10 col-md-offset-1 row-md-offset-1" id="result"/>-->
-            <!--</div>-->
+            <div class="row" ng-if="result" ng-controller="popOverController">
+                <div class="col-sm-10 pre-scrollable panel panel-default" id="scrollable" ng-bind-html="result"/>
+                <div class="col-sm-2 panel panel-default" ng-if="detailsAnnotation"/>
+            </div>
         </div>
     </div>
 </div>

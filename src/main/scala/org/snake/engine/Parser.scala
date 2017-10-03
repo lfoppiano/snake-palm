@@ -3,13 +3,11 @@ package org.snake.engine
 import java.io.InputStream
 import java.util
 
-import com.sun.scenario.effect.Offset
-import org.grobid.core.data.Date
 import org.grobid.core.data.dates.Period
 import org.grobid.core.engines.{DateParser, MultiDateParser, NERParser, NERParsers}
 import org.grobid.core.lexicon.NERLexicon.NER_Type
 import org.grobid.core.main.{GrobidHomeFinder, LibraryLoader}
-import org.grobid.core.utilities.{GrobidProperties, OffsetPosition}
+import org.grobid.core.utilities.GrobidProperties
 
 import scala.collection.JavaConverters
 import scala.io.Source
@@ -36,7 +34,7 @@ class Parser(parser: NERParser, intervalParser: MultiDateParser, dParser: DatePa
     entitiesScala.foreach(x => println(x))
 
     val nerPeriods = {
-      entitiesScala.filter(e => e.getType == NER_Type.PERIOD)
+      entitiesScala.filter(e => e.getType == NER_Type.PERIOD || e.getType == NER_Type.EVENT)
     }
 
     println("Only periods and dates")
@@ -52,22 +50,44 @@ class Parser(parser: NERParser, intervalParser: MultiDateParser, dParser: DatePa
 
       periodsScala.foreach(p => {
 
-        p.setOffsetStart(nerStart);
-        p.setOffsetEnd(nerEnd);
+        p.setOffsetStart(nerStart)
+        p.setOffsetEnd(nerEnd)
 
         if (p.getType == Period.Type.VALUE) {
-          val date = dateParser.processing(p.getValue.getRawDate)
-          p.getValue.setIsoDate(date.get(0))
+          val date = Option.apply(dateParser.processing(p.getValue.getRawDate))
+          date match {
+            case Some(value) =>
+              p.getValue.setIsoDate(value.get(0))
+            case None =>
+              println("Some date are not at all dates.")
+          }
         } else if (p.getType == Period.Type.INTERVAL) {
-          val fromDate = dateParser.processing(p.getFromDate.getRawDate).get(0)
-          p.getFromDate.setIsoDate(fromDate)
+          val fromDate = Option.apply(dateParser.processing(p.getFromDate.getRawDate))
+          fromDate match {
+            case Some(value) =>
+              p.getFromDate.setIsoDate(value.get(0))
+            case None =>
+              println("Some date are not at all dates.")
+          }
 
-          val toDate = dateParser.processing(p.getToDate.getRawDate).get(0)
-          p.getToDate.setIsoDate(toDate)
+
+          val toDate = Option.apply(dateParser.processing(p.getToDate.getRawDate))
+          toDate match {
+            case Some(value) =>
+              p.getToDate.setIsoDate(value.get(0))
+            case None =>
+              println("Some date are not at all dates.")
+          }
 
         } else if (p.getType == Period.Type.LIST) {
           JavaConverters.asScalaBufferConverter(p.getList).asScala.toList.map(dw => {
-            dw.setIsoDate(dateParser.processing(dw.getRawDate).get(0))
+            val date = Option.apply(dateParser.processing(dw.getRawDate))
+            date match {
+              case Some(value) =>
+                dw.setIsoDate(value.get(0))
+              case None =>
+                println("Some date are not at all dates.")
+            }
           })
         }
       })
