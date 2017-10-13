@@ -8,7 +8,7 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.{Http, server}
 import akka.stream.ActorMaterializer
 import akka.util.ByteString
-import org.grobid.core.engines.{DateParser, MultiDateParser, NERParsers}
+import org.grobid.core.engines.{DateParser, NERParsers, TemporalExpressionParser}
 import org.grobid.core.main.{GrobidHomeFinder, LibraryLoader}
 import org.grobid.core.utilities.GrobidProperties
 import org.snake.engine.Parser
@@ -36,9 +36,9 @@ object WebServer {
 
     val nerParsers = new NERParsers()
     val dateParser = new DateParser()
-    val multiDateParser = new MultiDateParser()
+    val temporalExpressionParser = new TemporalExpressionParser()
 
-    val parser = new Parser(nerParsers.getParser("en"), multiDateParser, dateParser)
+    val parser = new Parser(nerParsers.getParser("en"), temporalExpressionParser, dateParser)
 
     val route: server.Route =
 

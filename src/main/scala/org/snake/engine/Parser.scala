@@ -4,7 +4,7 @@ import java.io.InputStream
 import java.util
 
 import org.grobid.core.data.dates.Period
-import org.grobid.core.engines.{DateParser, MultiDateParser, NERParser, NERParsers}
+import org.grobid.core.engines._
 import org.grobid.core.lexicon.NERLexicon.NER_Type
 import org.grobid.core.main.{GrobidHomeFinder, LibraryLoader}
 import org.grobid.core.utilities.GrobidProperties
@@ -12,11 +12,11 @@ import org.grobid.core.utilities.GrobidProperties
 import scala.collection.JavaConverters
 import scala.io.Source
 
-class Parser(parser: NERParser, intervalParser: MultiDateParser, dParser: DateParser) {
+class Parser(parser: NERParser, intervalParser: TemporalExpressionParser, dParser: DateParser) {
 
   var nerParser: NERParser = parser
   var dateParser: DateParser = dParser
-  var multiDateParser: MultiDateParser = intervalParser
+  var temporalExpressionParser: TemporalExpressionParser = intervalParser
 
   def parse(is: InputStream): List[Period] = {
 
@@ -45,7 +45,7 @@ class Parser(parser: NERParser, intervalParser: MultiDateParser, dParser: DatePa
       val nerStart = nerEntityPeriod.getOffsetStart
       val nerEnd = nerEntityPeriod.getOffsetEnd
 
-      val periods = multiDateParser.process(nerEntityPeriod.getRawName)
+      val periods = temporalExpressionParser.process(nerEntityPeriod.getRawName)
       val periodsScala = JavaConverters.asScalaBufferConverter(periods).asScala.toList
 
       periodsScala.foreach(p => {
@@ -118,7 +118,7 @@ object DemoPeriod {
 
     val nerParsers = new NERParsers()
     val dateParser = new DateParser()
-    val multiDateParser = new MultiDateParser()
+    val multiDateParser = new TemporalExpressionParser()
 
     new Parser(nerParsers.getParser("en"), multiDateParser, dateParser).parse(text)
 
@@ -142,7 +142,7 @@ object DemoDate {
     LibraryLoader.load()
 
     val dateParser = new DateParser()
-    val multiDateParser = new MultiDateParser()
+    val multiDateParser = new TemporalExpressionParser()
 
     val src = Source.fromFile(args(0))
     val iter = src.getLines()
