@@ -8,11 +8,13 @@ import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.{Http, server}
 import akka.stream.ActorMaterializer
 import akka.util.ByteString
+import org.grobid.core.data.dates.Period
 import org.grobid.core.engines.{DateParser, NERParsers, TemporalExpressionParser}
 import org.grobid.core.main.{GrobidHomeFinder, LibraryLoader}
 import org.grobid.core.utilities.GrobidProperties
 import org.snake.engine.Parser
 
+import scala.collection.mutable
 import scala.io.StdIn
 
 object WebServer {
@@ -23,7 +25,6 @@ object WebServer {
 
     // needed for the future flatMap/onComplete in the end
     implicit val executionContext = system.dispatcher
-
 
     //-- GROBID INITIALISATION --
     val grobidHome = "/Users/lfoppiano/development/inria/grobid/grobid-home"
@@ -58,12 +59,22 @@ object WebServer {
           post {
             entity(as[String]) { text =>
               val result = parser.parse(text)
-              val jsons = result.map(f => f.toJson())
+              val analytics: mutable.Map[String, String] = result("analytics").asInstanceOf[mutable.Map[String, String]]
+              val dates: List[Period] = result("dates").asInstanceOf[List[Period]]
+
+              val jsons = dates.map(f => f.toJson())
 
 
-              val start = """{"dates":["""
-              val end = """]}"""
-              val json = jsons.mkString(start, ",", end)
+              val start = """{"""
+              val end = """}"""
+              val dateStart = """"dates":["""
+              val dateEnd ="""]"""
+
+              val datesJson = jsons.mkString(dateStart, ",", dateEnd)
+
+              val analyticsJson = s""""analytics": { "minDate": "${analytics("minDate")}", "maxDate": "${analytics("maxDate")}"}"""
+
+              val json = s"${start} ${datesJson}, ${analyticsJson} ${end}"
 
               complete(HttpEntity(ContentTypes.`application/json`, ByteString(json)));
             }

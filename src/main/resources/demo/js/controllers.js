@@ -8,30 +8,59 @@ var examples = [
 
 app.controller('nerdController', function ($scope, $http, $sce) {
 
-    /*getRawValue = function(entity) {
-        switch (type) {
-            case 'value':
-                // var start = date.value.offsetStart;
-                // var end = date.value.offsetEnd;
-                return 
+    getDate = function (isoDate) {
+        if (isoDate.rawValue !== null) {
+            result = "";
+            if (isoDate.day > 0) {
+                result = "day: " + isoDate.day
+            }
+            if (isoDate.month > 0) {
+                if (result !== "") {
+                    result = result + ", ";
+                }
+                result = result + "month: " + isoDate.month
+            }
+            if (isoDate.year > 0) {
+                if (result !== "") {
+                    result = result + ", ";
+                }
+                result = result + "year: " + isoDate.year
+            }
+            return result;
+        } else {
+            return "The value cannot be parsed";
+        }
 
+    };
+
+    getRawValue = function (entity) {
+        switch (entity.type) {
+            case 'value':
+                if (entity.value.isoDate.rawValue !== null) {
+                    return "Value " + getDate(entity.value.isoDate)
+                }
                 break;
             case 'interval':
-                var startFrom = date.valueFrom.offsetStart;
-                var endFrom = date.valueFrom.offsetEnd;
-                console.log(text.substring(startFrom, endFrom));
+                result = "";
+                if (entity.fromDate.isoDate.rawValue !== null) {
+                    result = result + "From: " + getDate(entity.fromDate.isoDate)
+                }
 
-                var startTo = date.valueFrom.offsetStart;
-                var endTo = date.valueFrom.offsetEnd;
-                console.log(text.substring(startTo, endTo));
+                if (entity.toDate.isoDate.rawValue !== null) {
+                    if (result !== "") {
+                        result = result + ", "
+                    }
+                    result = result + "To " + getDate(entity.toDate.isoDate)
+                }
+                return result;
 
                 break;
             case 'list':
-
+                return "bao";
 
                 break;
         }
-    };*/
+    };
 
     $scope.fetchExample = function (n) {
         $scope.text = examples[n];
@@ -40,15 +69,25 @@ app.controller('nerdController', function ($scope, $http, $sce) {
     $scope.showResults = function (text, data) {
         annotatedText = text;
 
-        datesList = data['dates'];
-        var lastMaxIndex = text.length;
+        analytics = data['analytics'];
 
+        $scope.minDate = "<b>Earlier date: </b>" + analytics['minDate'];
+        $scope.maxDate = "<b>Latest date: </b>" + analytics['maxDate'];
+
+        console.log($scope.minDate);
+        console.log($scope.maxDate);
+
+        datesList = data['dates'];
+
+        // Output text
+        var lastMaxIndex = text.length;
         var currentAnnotationIndex = datesList.length - 1;
 
         for (var m = datesList.length - 1; m >= 0; m--) {
             var entity = datesList[m];
 
-            var label = entity.rawText;
+            // var label = entity.rawText;
+            var label = getRawValue(entity);
             var type = entity.type;
 
             var start = parseInt(entity.offsetStart, 10);
@@ -68,7 +107,7 @@ app.controller('nerdController', function ($scope, $http, $sce) {
                 // entityMap[currentAnnotationIndex].push(responseJson.entities[m]);
             } else {
                 annotatedText = annotatedText.substring(0, start)
-                        + '<span uib-popover="' + type + '" popover-trigger="\'mouseenter\'" id="annot-' + m + '" class="label ' + type + '" style="cursor:hand;cursor:pointer;">'
+                    + '<span uib-popover="' + label + '" popover-trigger="\'mouseenter\'" id="annot-' + m + '" class="label ' + type + '" style="cursor:hand;cursor:pointer;">'
                     + annotatedText.substring(start, end)
                     + '</span>'
                     + annotatedText.substring(end, annotatedText.length + 1);
@@ -80,7 +119,7 @@ app.controller('nerdController', function ($scope, $http, $sce) {
 
         console.log(annotatedText);
         $scope.result = $sce.trustAsHtml(annotatedText);
-        
+
     };
 
     $scope.process = function (text) {

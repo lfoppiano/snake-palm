@@ -78,13 +78,15 @@
                 </div>
             </div>
 
-            <br />
+            <br/>
 
-            <div class="row" ng-if="result" ng-controller="popOverController" >
-                <div class="col-sm-10 pre-scrollable panel panel-default" id="scrollable" compiled-results message="result" style="overflow:visible;"/>
-                
-                <!--<div class="col-sm-10 pre-scrollable panel panel-default" id="scrollable" uib-popover-html="result"/>-->
-                <!--<div class="col-sm-2 panel panel-default" ng-if="detailsAnnotation"/>-->
+            <div class="row" ng-if="result" ng-controller="popOverController">
+                <div class="col-sm-10 pre-scrollable panel panel-default" id="scrollable" compiled-results
+                     message="result" style="overflow:visible;"/>
+            </div>
+            <div class="col-sm-2 panel panel-default">
+                <div ng-if="minDate" ng-bind-html="minDate"></div>
+                <div ng-if="maxDate" ng-bind-html="maxDate"></div>
             </div>
         </div>
     </div>
