@@ -1,4 +1,4 @@
-var app = angular.module('date-application', ['ngSanitize', 'ui.bootstrap']);
+var app = angular.module('date-application', ['ngSanitize', 'ui.bootstrap', 'ngAnimate']);
 
 var examples = [
     "Consists of one manuscript, 56 pages, entitled \"A Brief History of the Moller Family During the Nazi Era, 1933-1945, and Beyond,\" written in 2006 by brothers Ruben H. Moller and Levi W. Moller.\n The manuscript details their childhood in Bochum, Germany, the death of their father in 1935, and their experiences on Kristallnacht. In December 1941, the brothers, with their mother, Ester, were deported to the Riga ghetto, where they lived from January 1942 until July 1943. Then, they were transferred, first to the Kaiserwald concentration camp, and then to work at Duenawerke. In May 1944, they were transferred to the Panovezys work camp and the Siauliai ghetto before going in June 1944 to the Stutthof concentration camp, where they were separated from their mother. In July 1944, the brothers were transferred again to a work commando operating out of the Kaufering concentration camp, where they worked until their final transfer to the Leitmeritz subcamp of Flossenbürg. Upon returning to Bochum after liberation, they reunited with their mother, and eventually Ester and Ruben immigrated to the United States while Levi immigrated to Israel.",
@@ -80,6 +80,7 @@ app.controller('nerdController', function ($scope, $http, $sce) {
 
         console.log(annotatedText);
         $scope.result = $sce.trustAsHtml(annotatedText);
+        
     };
 
     $scope.process = function (text) {
