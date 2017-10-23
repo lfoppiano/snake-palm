@@ -36,6 +36,9 @@ class Parser(parser: NERParser, intervalParser: TemporalExpressionParser, dParse
     minDate.setYear(9999)
 
     var maxDate: Date = new Date()
+    maxDate.setDay(1)
+    maxDate.setMonth(1)
+    maxDate.setYear(0)
 
     processedPeriods.foreach(p => {
       if (p.getType == Period.Type.VALUE) {
@@ -74,7 +77,7 @@ class Parser(parser: NERParser, intervalParser: TemporalExpressionParser, dParse
       returnMap("minDate") = ""
     }
 
-    if (maxDate.getYear > -1) {
+    if (maxDate.getYear > 0) {
       returnMap("maxDate") = toStringDate(maxDate)
     } else {
       returnMap("maxDate") = ""
