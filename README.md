@@ -5,7 +5,7 @@
 
 Extraction and processing of temporal expressions, as dates, periods (intervals) or lists. Based on GROBID (http://github.com/kermitt2/grobid) and GROBID-NER (http://github.com/kermitt2/grobid-ner) CRF models. 
 
-![Screenshot Home](doc/images/home.png|width=500 "Screenshot Home")
+![Screenshot Home](doc/images/home.png "Screenshot Home")
 
 ### Dependencies ###
 
