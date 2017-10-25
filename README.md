@@ -5,7 +5,7 @@
 
 Work in progress... 
 
-[Screenshot Home](https://github.com/lfoppiano/snake-palm/raw/master/doc/images/home.png "Screenshot Home")
+![Screenshot Home](doc/images/home.png "Screenshot Home")
 
 ### Dependencies ###
 
