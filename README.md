@@ -3,9 +3,9 @@
 [![Build Status](https://travis-ci.org/lfoppiano/snake-palm.svg?branch=master)](https://travis-ci.org/lfoppiano/snake-palm)
 [![Coverage Status](https://coveralls.io/repos/lfoppiano/snake-palm/badge.svg)](https://coveralls.io/r/lfoppiano/snake-palm)
 
-Work in progress... 
+Extraction and processing of temporal expressions, as dates, periods (intervals) or lists. Based on GROBID (http://github.com/kermitt2/grobid) and GROBID-NER (http://github.com/kermitt2/grobid-ner) CRF models. 
 
-![Screenshot Home](doc/images/home.png "Screenshot Home")
+![Screenshot Home](doc/images/home.png|width=500 "Screenshot Home")
 
 ### Dependencies ###
 
