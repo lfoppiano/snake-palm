@@ -5,6 +5,8 @@
 
 Work in progress... 
 
+[Screenshot Home](https://github.com/lfoppiano/snake-palm/raw/master/doc/images/home.png "Screenshot Home")
+
 ### Dependencies ###
 
  - GROBID, branch [dropwizard-service](https://github.com/kermitt2/grobid/tree/dropwizard-service)
