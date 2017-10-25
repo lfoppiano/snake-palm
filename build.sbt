@@ -21,6 +21,7 @@ libraryDependencies ++= Seq(
 //  "com.google.code.findbugs" % "jsr305" % "2.0.2"
 )
 
+mainClass in (Compile, run) := Some("org.snake.controller.WebServer")
 
 //excludeDependencies += "org.slf4j" %% "slf4j-log4j12"
 //excludeDependencies += "log4j" %% "log4j"

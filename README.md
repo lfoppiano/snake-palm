@@ -16,16 +16,34 @@ Work in progress...
 ```bash
 > git clone https://github.com/kermitt2/grobid.git
 > git checkout dropwizard-service
-> mvn clean install
+> cd grobid
+> ./gradlew clean install
 ``` 
 
 2. Install GROBID-NER (branch newModelUsingXML)
 ```bash
-> git clone https://github.com/kermitt2/grobid-ner.git
+> git clone https://github.com/kermitt2/grobid-ner.git # Check it out inside the grobid directory
 > git checkout newModelUsingXML
 > mvn clean install 
 ``` 
 
-3. Train the multiDate model 
+3. Set up GROBID-NER (assuming you are still in the grobid directory) 
+```bash
+> cp -r grobid-ner/grobid-home grobid-home  
+``` 
 
-TBC
+4. Train the Temporal Expression model
+```bash
+cd grobid-ner/grobid-ner 
+> mvn generate-resources -Ptrain_temporalExpression
+```
+
+5. Run the service 
+```bash
+> cd snake-palm 
+> sbt compile
+> sbt run
+```
+
+6. Connect with the browser to http://localhost:8080/demo/index.html
+
