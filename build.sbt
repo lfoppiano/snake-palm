@@ -5,6 +5,7 @@ version := "0.0.1"
 scalaVersion := "2.12.3"
 
 resolvers += Classpaths.typesafeReleases
+resolvers += "Bintray Rookies Repository" at "https://dl.bintray.com/rookies/maven"
 
 libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % "1.1.5" % "runtime",
@@ -16,8 +17,8 @@ resolvers += Resolver.mavenLocal
 
 // GROBID - for now unmanaged in ./lib directory
 libraryDependencies ++= Seq(
-  "org.grobid" % "grobid-core" % "0.5.0-SNAPSHOT",
-  "org.grobid" % "grobid-ner" % "0.5.0-SNAPSHOT"
+  "org.grobid" % "grobid-core" % "0.5.1",
+  "org.grobid" % "grobid-ner" % "0.5.0.2-SNAPSHOT"
 //  "com.google.code.findbugs" % "jsr305" % "2.0.2"
 )
 
