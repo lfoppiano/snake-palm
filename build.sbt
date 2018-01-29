@@ -17,8 +17,8 @@ resolvers += Resolver.mavenLocal
 
 // GROBID - for now unmanaged in ./lib directory
 libraryDependencies ++= Seq(
-  "org.grobid" % "grobid-core" % "0.5.1",
-  "org.grobid" % "grobid-ner" % "0.5.0.2-SNAPSHOT"
+  "org.grobid" % "grobid-core" % "0.5.1"
+//  "org.grobid" % "grobid-ner" % "0.5.0.2-SNAPSHOT"
 //  "com.google.code.findbugs" % "jsr305" % "2.0.2"
 )
 
